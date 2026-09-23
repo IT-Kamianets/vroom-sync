@@ -1,0 +1,19 @@
+{
+    "name": "VRoom.Sync.Editor",
+    "rootNamespace": "VRoom.Sync.Editor",
+    "references": [
+        "ITKamianets.Engine.Scene",
+        "VRoom.Sync"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
