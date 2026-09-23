@@ -21,11 +21,11 @@ Meta Quest Scan
 → `vroom-sync`
 → Firebase
 
-For the scanner MVP, the package will allow a scanned hotel room to be stored under a specific hotel and room.
+VRoom scans any interior (a hotel is just one example) — `vroom-sync` doesn't assume what kind of place is being scanned. For the scanner MVP, the package will allow a scanned space (room, corridor, or common area) to be stored under a specific interior and floor. `3d-scene-schema` has no concept of interiors, floors, or spaces at all — those identifiers belong entirely to `vroom-sync`; see its README for why the scene document itself carries none of this.
 
 Example structure:
 
-hotels/{hotelId}/rooms/{roomId}/scene
+interiors/{interiorId}/floors/{floorId}/spaces/{spaceId}/scene
 
 Later, the same package can be used by desktop, mobile, web, Quest, and viewer applications.
 
@@ -35,7 +35,7 @@ Later, the same package can be used by desktop, mobile, web, Quest, and viewer a
 - Scene upload
 - Scene download
 - Scene updates
-- Hotel and room identification
+- Interior, floor, and space identification
 - Synchronization status
 - Error handling
 - Offline and retry handling
@@ -49,7 +49,7 @@ Later, the same package can be used by desktop, mobile, web, Quest, and viewer a
 
 - Firebase project integration
 - Firebase authentication support
-- Save scene by hotel ID and room ID
+- Save scene by interior ID, floor ID, and space ID
 - Load existing scene
 - Update existing scene
 - Upload `3d-scene-schema` data
