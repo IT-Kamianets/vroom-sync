@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Firebase.Firestore;
 using ITKamianets.Engine.Scene;
 using ITKamianets.Engine.Scene.Model;
+
+#if FIRESTORE_PRESENT
+using Firebase.Firestore;
+#endif
 
 namespace VRoom.Sync
 {
@@ -17,15 +20,19 @@ namespace VRoom.Sync
     /// mapping every schema field to native Firestore fields (for querying into scene internals)
     /// is not needed yet and can be added later without changing this method's signature.
     ///
-    /// NOTE: written against the Firebase Unity SDK's Firestore API as commonly documented, but
-    /// not verified against a live installed SDK version in the Editor. This package hard-references
-    /// Firebase.App/Firebase.Firestore (unlike 3d-unity-spatial's optional MRUK dependency) because
-    /// Firebase sync is this package's entire purpose, not an optional extra.
+    /// Compiles to a no-op (throws) without the Firebase Firestore SDK installed, so this
+    /// package -- and anything that depends on it, like vroom-scanner -- can still build without
+    /// Firebase present. Written against the Firebase Unity SDK's Firestore API as commonly
+    /// documented, but not verified against a live installed SDK version in the Editor yet.
     /// </summary>
     public class SceneSyncService
     {
         public async Task UploadSceneAsync(SceneData scene, string interiorId, string floorId, string spaceId)
         {
+#if !FIRESTORE_PRESENT
+            throw new System.InvalidOperationException(
+                "Firebase Firestore (com.google.firebase.firestore) is not installed in this project.");
+#else
             var db = FirebaseFirestore.DefaultInstance;
             var docRef = db
                 .Collection("interiors").Document(interiorId)
@@ -41,6 +48,7 @@ namespace VRoom.Sync
             };
 
             await docRef.SetAsync(data, SetOptions.MergeAll);
+#endif
         }
     }
 }

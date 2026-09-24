@@ -3,17 +3,30 @@
     "rootNamespace": "VRoom.Sync",
     "references": [
         "ITKamianets.Engine.Scene",
-        "Unity.Newtonsoft.Json",
         "Firebase.App",
-        "Firebase.Firestore"
+        "Firebase.Firestore",
+        "Firebase.Auth"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.google.firebase.firestore",
+            "expression": "",
+            "define": "FIRESTORE_PRESENT"
+        },
+        {
+            "name": "com.google.firebase.auth",
+            "expression": "",
+            "define": "FIREBASE_AUTH_PRESENT"
+        }
+    ],
     "noEngineReferences": false
 }
