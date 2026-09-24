@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
-#if FIRESTORE_PRESENT
 using Firebase.Firestore;
-#endif
 
 namespace VRoom.Sync
 {
@@ -22,17 +19,13 @@ namespace VRoom.Sync
     /// pass those rules -- without a project having been created first, every scan upload will
     /// be rejected.
     ///
-    /// Same optional-dependency pattern as SceneSyncService: compiles fine without the Firebase
-    /// Firestore SDK installed, methods just throw if called.
+    /// Hard-references Firebase.Firestore (installed as a loose DLL under Assets/Firebase, not a
+    /// UPM package -- so there's no version-defines mechanism to guard this optionally).
     /// </summary>
     public class ProjectService
     {
         public async Task<string> CreateProjectAsync(string ownerId, string name)
         {
-#if !FIRESTORE_PRESENT
-            throw new System.InvalidOperationException(
-                "Firebase Firestore (com.google.firebase.firestore) is not installed in this project.");
-#else
             var docRef = FirebaseFirestore.DefaultInstance.Collection("interiors").Document();
 
             var data = new Dictionary<string, object>
@@ -44,15 +37,10 @@ namespace VRoom.Sync
 
             await docRef.SetAsync(data);
             return docRef.Id;
-#endif
         }
 
         public async Task<List<ProjectSummary>> ListMyProjectsAsync(string ownerId)
         {
-#if !FIRESTORE_PRESENT
-            throw new System.InvalidOperationException(
-                "Firebase Firestore (com.google.firebase.firestore) is not installed in this project.");
-#else
             var snapshot = await FirebaseFirestore.DefaultInstance
                 .Collection("interiors")
                 .WhereEqualTo("ownerId", ownerId)
@@ -70,7 +58,6 @@ namespace VRoom.Sync
             }
 
             return projects;
-#endif
         }
     }
 }

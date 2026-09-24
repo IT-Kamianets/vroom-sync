@@ -37,11 +37,13 @@ Later, the same package can be used by desktop, mobile, web, Quest, and viewer a
 
 Mapping every schema field to native Firestore fields (to query into scene internals directly) is deliberately deferred -- not needed until something actually needs to query inside a scene rather than just fetch/display the whole thing.
 
-Same optional-dependency pattern as `3d-unity-spatial`'s MRUK reference: compiles fine without the Firebase Unity SDK installed, `UploadSceneAsync` just throws if called. This lets `vroom-scanner` (and anything else depending on this package) build and run without Firebase present yet -- useful for getting a first APK out before the SDK is wired up. Written against the Firebase Unity SDK's Firestore API as commonly documented, but not verified against a live installed SDK version in the Editor yet.
+The Firebase Unity SDK (Auth + Firestore + App) is installed as loose DLLs under `Assets/Firebase` in `vroom-scanner` -- Firebase distributes it as classic `.unitypackage` files rather than real UPM packages, so there's no `versionDefines` mechanism to detect it and compile around its absence the way `3d-unity-spatial` does for MRUK. This package hard-references `Firebase.Firestore`/`Firebase.Auth`/`Firebase.App`, full stop; earlier drafts of this code had an optional-dependency fallback for the period before Firebase was actually installed, since removed now that it is.
 
-Two more pieces exist for the same reason (Firestore security rules require every `interiors/{interiorId}` document to carry an `ownerId`, and something has to set it):
+Written against the Firebase Unity SDK's Firestore/Auth API as commonly documented, but not verified against a live installed SDK version in the Editor yet.
 
-- `Runtime/AuthService.cs` -- email/password sign up / sign in / sign out via Firebase Auth. Same optional-dependency pattern, gated on `com.google.firebase.auth`.
+Two more pieces exist because Firestore security rules require every `interiors/{interiorId}` document to carry an `ownerId`, and something has to set it:
+
+- `Runtime/AuthService.cs` -- email/password sign up / sign in / sign out via Firebase Auth.
 - `Runtime/ProjectService.cs` -- `CreateProjectAsync(ownerId, name)` creates an `interiors/{interiorId}` document with that `ownerId` (this is what makes a later `SceneSyncService` upload under that interior actually pass the rules); `ListMyProjectsAsync(ownerId)` queries a user's own projects.
 
 No password reset, email verification, other auth providers, or project rename/delete yet.
